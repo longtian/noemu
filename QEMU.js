@@ -41,6 +41,7 @@ QEMU.prototype.createVM = function(options) {
          */
         if(options.uuid){
             cmd+=' -uuid '+options.uuid;
+            cmd+=' -monitor unix:/tmp/'+options.uuid+".sock,server,nowait";
         }
         /**
          * -uuid
