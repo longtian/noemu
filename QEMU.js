@@ -3,6 +3,7 @@
  */
 
 var Connection = require('ssh2');
+var js2qemu=require('./js2qemu');
 
 /**
  * 
@@ -25,59 +26,10 @@ var QEMU = function(host, username, password) {
 QEMU.prototype.createVM = function(options) {
     
     var self=this;
-    
-    var buildCommandFromOptions=function(){
-        var cmd='qemu-system-x86_64 ';
-        
-        /**
-         * [image]
-         */
-        if(options.image){
-           cmd+=" "+options.image ;
-        }
-        
-        /**
-         * -uuid
-         */
-        if(options.uuid){
-            cmd+=' -uuid '+options.uuid;
-            cmd+=' -monitor unix:/tmp/'+options.uuid+".sock,server,nowait";
-        }
-        /**
-         * -uuid
-         */
-        if(options.pidfile){
-            cmd+=' -pidfile '+options.pidfile;
-        }
-        
-        /**
-         * -spice
-         */
-        if(options.spice){
-           cmd+=' -spice';
-           if(options.spice.port){
-               cmd+=' port='+options.spice.port;
-               if(options.spice.password){
-                    cmd+=',password='+options.spice.password;
-               }
-           }
-        }
-        
-        /**
-         * -display
-         */
-        if(options.display){
-            
-        }else{
-            cmd+=' -display none';
-        }
-        
-        return cmd;
-    };
-    
     var conn = new Connection();
     conn.on('ready', function() {
-        var command=buildCommandFromOptions(options);
+        var command=js2qemu(options);
+        console.info(command);
         conn.exec("nohup "+command+" &", function(err, stream) {
             if (err) {
                 throw err;
