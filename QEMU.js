@@ -3,7 +3,7 @@
  */
 
 var Connection = require('ssh2');
-var js2qemu=require('./js2qemu');
+var js2qemu = require('./js2qemu');
 
 /**
  * 
@@ -24,30 +24,28 @@ var QEMU = function(host, username, password) {
  * @returns {undefined}
  */
 QEMU.prototype.createVM = function(options) {
-    
-    var self=this;
+
+    var self = this;
     var conn = new Connection();
     conn.on('ready', function() {
-        var command=js2qemu(options);
-        console.info(command);
-        conn.exec("nohup "+command+" &", function(err, stream) {
+        var command = js2qemu(options);
+        conn.exec("nohup " + command + " &", function(err, stream) {
             if (err) {
                 throw err;
             }
-            
-            if(options.spice && options.spice.port){
-                var spice_url="spice://"+self.host+":"+options.spice.port;
-                if(options.spice.password){
-                    console.log(spice_url+"?password="+options.spice.password);
-                }else{
+
+            if (options.spice && options.spice.port) {
+                var spice_url = "spice://" + self.host + ":" + options.spice.port;
+                if (options.spice.password) {
+                    console.log(spice_url + "?password=" + options.spice.password);
+                } else {
                     console.log(spice_url);
                 }
             }
-            
+
             stream.on('exit', function() {
             }).on('close', function() {
                 conn.end();
-                process.exit();
             });
 
             stream.stderr.on('data', function(data) {
@@ -56,6 +54,31 @@ QEMU.prototype.createVM = function(options) {
                 conn.end();
             });
         });
+
+//        var socket_command = "python /usr/share/nginx/html/websockify/fork.py " + (100 + options.spice.port) + " localhost:" + options.spice.port;
+//        
+//        conn.exec(socket_command, function(err, stream) {
+//            
+//            if (err) {
+//                throw err;
+//            }
+//            
+//            console.info(socket_command);
+//            
+//            stream.on('exit', function() {
+//            }).on('close', function() {
+//                conn.end();
+//            });
+//            
+//            stream.on('data', function(data) {
+//                console.info("data:" + data.toString());
+//            });
+//            
+//            stream.stderr.on('data', function(data) {
+//                console.error("raw command:" + socket_command);
+//                console.info("stderror:" + data.toString());
+//            });
+//        });
     }).connect({
         host: this.host,
         port: 22,

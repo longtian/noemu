@@ -5,8 +5,30 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">	
         <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" >
         <title>iLab New UI Incubation</title>	
+        <!-- Firebase -->
+        <script src="//cdn.firebase.com/js/client/1.0.17/firebase.js"></script>
+        <!-- AngularJS -->
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
+        <!-- AngularFire Library -->
+        <script src="//cdn.firebase.com/libs/angularfire/0.7.1/angularfire.min.js"></script>
+        <script src="main/app.js"></script>
     </head>
-    <body>
-        <h1>Hello3</h1>
+    <body ng-app="VMManager">
+        <div ng-controller="VMList">
+            <ul>
+                <li ng-repeat="vm in vms">
+                    <a target="_blank" href="spice-html5-0.1.4/spice_auto.html?uuid={{vm}}">{{vm}}</a>
+                </li>
+            </ul>
+            <form style="border: 1px solid darkcyan">
+                <label>
+                    Image:
+                    <select ng-model="vm.image">
+                        <option selected>/root/qemu/linux/linux-0.2.img</option>
+                    </select>
+                </label>
+                <button type="submit" ng-click="addVM()">Create New Instance</button>
+            </form>
+        </div>
     </body>
 </html>
