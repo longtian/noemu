@@ -8,7 +8,7 @@ module.exports=function(grunt){
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.initConfig({
        jshint: {
-        all: ['Gruntfile.js', '*.js']
+        all: ['Gruntfile.js', '*.js','app/main/**/*.js']
       },
       connect:{
           server:{
@@ -44,26 +44,26 @@ module.exports=function(grunt){
                                         "pidfile": "/tmp/" + uuid + ".pid"
                                     };
                                     
-                                    if(options["name"]){
-                                        vm_options["name"]=options.name;
+                                    if(options.name){
+                                        vm_options.name=options.name;
                                     }
                                     
-                                    if(options["image"]){
-                                        vm_options["image"]=options.image;
-                                    }else if(options["cdrom"]){
-                                        vm_options["cdrom"]=options.cdrom;
+                                    if(options.image){
+                                        vm_options.image=options.image;
+                                    }else if(options.cdrom){
+                                        vm_options.cdrom=options.cdrom;
                                     }
                                     
-                                    if(options["console"]==="spice"){
-                                        vm_options[ "spice"]= {
+                                    if(options.console==="spice"){
+                                        vm_options.spice= {
                                             port: 5000 + run_count,
                                             password: "12345678"
-                                        }
-                                    }else if (options["console"]==="vnc"){
-                                        vm_options[ "vnc"]= {
+                                        };
+                                    }else if (options.console==="vnc"){
+                                        vm_options.vnc= {
                                             "display": run_count,
                                             "websocket": 5200+run_count,
-                                        }
+                                        };
                                     }
                                     qemu.createVM(vm_options);
                                     

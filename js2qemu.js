@@ -6,16 +6,16 @@
 var extend = require('node.extend');
 /**
  * 
- * @param {Object} options
+ * @param {Object} user_options
  * @returns {string}
  */
-function js2qemu(options) {
+function js2qemu(user_options) {
     var defaultOptions = {
         arch: "x86_64",
         display: "none"
     };
 
-    var options = extend(defaultOptions, options);
+    var options = extend(defaultOptions, user_options);
     
     var cmd = '';
     /*
