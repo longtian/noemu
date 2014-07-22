@@ -15,18 +15,50 @@
     </head>
     <body ng-app="VMManager">
         <div ng-controller="VMList">
-            <ul>
-                <li ng-repeat="vm in vms">
-                    <a target="_blank" href="spice-html5-0.1.4/spice_auto.html?uuid={{vm}}">{{vm}}</a>
-                </li>
-            </ul>
+            <table>
+                <tr>
+                    <th>UUID</th>
+                    <th>Action</th>
+                    <th>Console</th>
+                    <th>port</th>
+                </tr>
+                <tr ng-repeat="vm in vms">
+                    <td>{{vm.uuid}}</td>
+                    <td><a target="_blank" href="noVNC/vnc_auto.html?host=qemu001.sh.intel.com&port={{vm.vnc.websocket}}">console</a></td>
+                    <td>{{vm.console}}</td>
+                    <td>{{vm.spice.port}}</td>
+                </tr>
+            </table>
             <form style="border: 1px solid darkcyan">
-                <label>
-                    Image:
-                    <select ng-model="vm.image">
-                        <option selected>/root/qemu/linux/linux-0.2.img</option>
-                    </select>
-                </label>
+                <p>
+                    <label>
+                        Host
+                        <select ng-model="vm.host">
+                            <option value="">-- choose a host --</option>
+                            <option ng-op>qemu001.sh.intel.com</option>
+                        </select>
+                    </label>  
+                </p>
+                <p>
+                    <label>
+                        Image:
+                        <select ng-model="vm.image">
+                            <option value="">-- choose a image --</option>
+                            <option selected>/root/qemu/linux/linux-0.2.img</option>
+                        </select>
+                    </label>   
+                </p>
+                <p>
+                    Console:
+                    <label>
+                        VNC
+                        <input ng-model="vm.console" checked value="vnc" type="radio"/>
+                    </label>   
+                    <label>
+                        SPICE
+                        <input ng-model="vm.console" value="spice" type="radio"/>
+                    </label>   
+                </p>
                 <button type="submit" ng-click="addVM()">Create New Instance</button>
             </form>
         </div>

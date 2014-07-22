@@ -20,31 +20,57 @@ module.exports=function(grunt){
                     target:"http://localhost/index.html",
                     appName:"Chrome"
                 },
-                middleware: function(connect, options, middlewares) {
-                    // inject a custom middleware into the array of default middlewares
+                middleware: function(connect, options, middlewares) {                    
+                    middlewares.unshift(function(req,res,next){
+                        if(req.method==="POST"){
+                            var _body = "";
+                            req.on('data', function (chunk) {
+                              _body += chunk;
+                            });
+                            req.on('end', function () {
+                                var options=JSON.parse(_body);
+
+                                var QEMU_HOST = options.host;
+                                var REDIS_HOST = 'qemu001.sh.intel.com';             
+                                var QEMU = require('./QEMU');
+                                var keym = require('./KeyManager');
+                                var qemu = new QEMU(QEMU_HOST, 'root', keym.getPrivateKeyContent());
+                                var client = require('redis').createClient(6379, REDIS_HOST);
+
+                                client.incr("run_count", function(err, run_count) {
+                                    var uuid = require('uuid').v4();
+                                    var vm_options = {
+                                        "uuid": uuid,
+                                        "pidfile": "/tmp/" + uuid + ".pid",
+                                        "image": options.image
+                                    };
+                                    
+                                    if(options["console"]==="spice"){
+                                        vm_options[ "spice"]= {
+                                            port: 5000 + run_count,
+                                            password: "12345678"
+                                        }
+                                    }else if (options["console"]==="vnc"){
+                                        vm_options[ "vnc"]= {
+                                            "display": run_count,
+                                            "websocket": 5200+run_count,
+                                        }
+                                    }
+                                    qemu.createVM(vm_options);
+                                    
+                                    res.writeHead(200);
+                                    res.end(JSON.stringify(vm_options));
+                                });
+                            });
+                        }else{
+                            next();
+                        }
+                    });
                     middlewares.push(function(req, res, next) { 
                         if (!req.url.match(/^\/api\//)) {
                              return next();
                         }else{
-                            var QEMU_HOST = 'qemu001.sh.intel.com';
-                            var REDIS_HOST = 'qemu001.sh.intel.com';
-                            var QEMU = require('./QEMU');
-                            var keym = require('./KeyManager');
-                            var qemu = new QEMU(QEMU_HOST, 'root', keym.getPrivateKeyContent());
-                            var client = require('redis').createClient(6379, REDIS_HOST);
-                            client.incr("run_count", function(err, run_count) {
-                                var uuid = require('uuid').v4();
-                                qemu.createVM({
-                                    "uuid": uuid,
-                                    "pidfile": "/tmp/" + uuid + ".pid",
-                                    "image": "/root/qemu/linux/linux-0.2.img",
-                                    "spice": {
-                                        port: 5000 + run_count,
-                                        password: "12345678"
-                                    }
-                                });
-                                res.end(uuid);
-                            });
+                            
                         }
                     });
                     return middlewares;
@@ -53,10 +79,10 @@ module.exports=function(grunt){
           },
       },
       watch:{
-          files:["app/**/*.js","app/**/*.html","app/**/*.css"],
-           options: {
-                livereload: true
-            },
+        files:["app/**/*.js","app/**/*.html","app/**/*.css"],
+        options: {
+            livereload: true
+        },
       }
     });
     

@@ -15,3 +15,15 @@ assert.equal("qemu-system-x86_64 /root/qemu/linux/linux-0.2.img -display none -u
                     }
                 }
         ));
+assert.equal("qemu-system-x86_64 /root/qemu/linux/linux-0.2.img -display none -uuid uuid -pidfile /tmp/uuid.pid -monitor unix:/tmp/uuid.sock,server,nowait -vnc :1,websocket=12345678",js2qemu(
+                {
+                    'uuid': "uuid",
+                    'pidfile': "/tmp/uuid.pid",
+                    'image': "/root/qemu/linux/linux-0.2.img",
+                    'monitor': 'unix:/tmp/uuid.sock,server,nowait',
+                    'vnc': {
+                        "": ":1",
+                        websocket: "12345678"
+                    }
+                }
+        ));

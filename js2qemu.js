@@ -31,6 +31,14 @@ function js2qemu(options) {
         delete options.image;
     }
     
+    if (options.vnc) {
+        cmd += ' -vnc :' + options.vnc.display;
+        if(options.vnc.websocket){
+            cmd += ',websocket=' + options.vnc.websocket;
+        }
+        delete options.vnc;
+    }
+    
     /*
      * options of command
      * @todo escape shell commands
@@ -47,7 +55,11 @@ function js2qemu(options) {
          */
         if('object'===typeof options[i]){
             for(var j in options[i]){
-                params.push(j+"="+options[i][j]);
+                if(j.length){
+                    params.push(j+"="+options[i][j]);
+                }else{
+                    params.push(options[i][j]);
+                }
             }
         }else{
             params.push(options[i]);
@@ -55,6 +67,7 @@ function js2qemu(options) {
         cmd+=" "+params.join(",");
     }
 
+    console.log(cmd);
     return cmd;
 }
 
