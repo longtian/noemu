@@ -6,29 +6,16 @@
         <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" >
         <title>iLab New UI Incubation</title>	
         <!-- Firebase -->
-        <script src="//cdn.firebase.com/js/client/1.0.17/firebase.js"></script>
+        <script src="js/firebase.js"></script>
         <!-- AngularJS -->
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
+        <script src="js/angular.min.js"></script>
         <!-- AngularFire Library -->
-        <script src="//cdn.firebase.com/libs/angularfire/0.7.1/angularfire.min.js"></script>
+        <script src="js/angularfire.min.js"></script>
         <script src="main/app.js"></script>
     </head>
     <body ng-app="VMManager">
         <div ng-controller="VMList">
-            <table>
-                <tr>
-                    <th>UUID</th>
-                    <th>Action</th>
-                    <th>Console</th>
-                    <th>port</th>
-                </tr>
-                <tr ng-repeat="vm in vms">
-                    <td>{{vm.uuid}}</td>
-                    <td><a target="_blank" href="noVNC/vnc_auto.html?host=qemu001.sh.intel.com&port={{vm.vnc.websocket}}">console</a></td>
-                    <td>{{vm.console}}</td>
-                    <td>{{vm.spice.port}}</td>
-                </tr>
-            </table>
+            
             <form style="border: 1px solid darkcyan">
                 <p>
                     <label>
@@ -40,11 +27,36 @@
                     </label>  
                 </p>
                 <p>
+                    Boot From:
                     <label>
+                        CD:
+                        <input  ng-model="vm.boot" value="cdrom" type="radio" checked />
+                    </label>
+                    <label>
+                        Image:
+                        <input ng-model="vm.boot" value="image" type="radio" />
+                    </label>
+                </p>
+                <p>
+                    <label ng-show="vm.boot == 'cdrom'">
+                        CD-ROM:
+                        <select ng-model="vm.cdrom">
+                            <option value="">-- choose a cd --</option>
+                            <option selected>/root/qemu/freed/fd11src.iso</option>
+                            <option selected>/root/qemu/netbsd/NetBSD-6.1.4-i386.iso</option>
+                            <option selected>/root/qemu/slitaz/slitaz-4.0.iso.iso</option>
+                            <option selected>/root/qemu/ubuntu/ubuntu-14-server.iso</option>
+                        </select>
+                    </label>   
+                </p>
+                <p>
+                    <label ng-show="vm.boot == 'image'">
                         Image:
                         <select ng-model="vm.image">
                             <option value="">-- choose a image --</option>
                             <option selected>/root/qemu/linux/linux-0.2.img</option>
+                            <option selected>/root/qemu/freedos/odin1440.img</option>
+                            <option selected>/root/qemu/minix/minix204.img</option>
                         </select>
                     </label>   
                 </p>
@@ -61,6 +73,21 @@
                 </p>
                 <button type="submit" ng-click="addVM()">Create New Instance</button>
             </form>
+            
+            <table>
+                <tr>
+                    <th>UUID</th>
+                    <th>Action</th>
+                    <th>Console</th>
+                    <th>port</th>
+                </tr>
+                <tr ng-repeat="vm in vms">
+                    <td>{{vm.uuid}}</td>
+                    <td><a target="_blank" href="noVNC/vnc_auto.html?host=qemu001.sh.intel.com&port={{vm.vnc.websocket}}">console</a></td>
+                    <td>{{vm.console}}</td>
+                    <td>{{vm.spice.port}}</td>
+                </tr>
+            </table>
         </div>
     </body>
 </html>

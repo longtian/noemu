@@ -41,9 +41,14 @@ module.exports=function(grunt){
                                     var uuid = require('uuid').v4();
                                     var vm_options = {
                                         "uuid": uuid,
-                                        "pidfile": "/tmp/" + uuid + ".pid",
-                                        "image": options.image
+                                        "pidfile": "/tmp/" + uuid + ".pid"
                                     };
+                                    
+                                    if(options["image"]){
+                                        vm_options["image"]=options.image;
+                                    }else if(options["cdrom"]){
+                                        vm_options["cdrom"]=options.cdrom;
+                                    }
                                     
                                     if(options["console"]==="spice"){
                                         vm_options[ "spice"]= {
