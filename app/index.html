@@ -43,10 +43,10 @@
                         CD-ROM:
                         <select ng-model="vm.cdrom">
                             <option value="">-- choose a cd --</option>
-                            <option selected>/root/qemu/freed/fd11src.iso</option>
-                            <option selected>/root/qemu/netbsd/NetBSD-6.1.4-i386.iso</option>
-                            <option selected>/root/qemu/slitaz/slitaz-4.0.iso</option>
-                            <option selected>/root/qemu/ubuntu/ubuntu-14-server.iso</option>
+                            <option>/root/qemu/freed/fd11src.iso</option>
+                            <option>/root/qemu/netbsd/NetBSD-6.1.4-i386.iso</option>
+                            <option>/root/qemu/slitaz/slitaz-4.0.iso</option>
+                            <option>/root/qemu/ubuntu/ubuntu-14-server.iso</option>
                         </select>
                     </label>   
                 </p>
@@ -55,9 +55,9 @@
                         Image:
                         <select ng-model="vm.image">
                             <option value="">-- choose a image --</option>
-                            <option selected>/root/qemu/linux/linux-0.2.img</option>
-                            <option selected>/root/qemu/freedos/odin1440.img</option>
-                            <option selected>/root/qemu/minix/minix204.img</option>
+                            <option>/root/qemu/linux/linux-0.2.img</option>
+                            <option>/root/qemu/freedos/odin1440.img</option>
+                            <option>/root/qemu/minix/minix204.img</option>
                         </select>
                     </label>   
                 </p>
@@ -65,7 +65,7 @@
                     Console:
                     <label>
                         VNC
-                        <input ng-model="vm.console" checked value="vnc" type="radio"/>
+                        <input ng-model="vm.console" value="vnc" type="radio"/>
                     </label>   
                     <label>
                         SPICE
@@ -75,7 +75,7 @@
                 <p>
                     <label>
                         Name
-                        <input ng-model="vm.name" type="text"/>
+                        <input ng-model="vm.name" required type="text"/>
                     </label>  
                 </p>
                 <button type="submit" ng-click="addVM()">Create New Instance</button>
@@ -85,15 +85,11 @@
                     <th>Name</th>
                     <th>UUID</th>
                     <th>Action</th>
-                    <th>Console</th>
-                    <th>port</th>
                 </tr>
                 <tr ng-repeat="vm in vms">
                     <td>{{vm.name}}</td>
                     <td>{{vm.uuid}}</td>
                     <td><a target="_blank" href="noVNC/vnc_auto.html?host=qemu001.sh.intel.com&port={{vm.vnc.websocket}}">console</a></td>
-                    <td>{{vm.console}}</td>
-                    <td>{{vm.spice.port}}</td>
                 </tr>
             </table>
         </div>
