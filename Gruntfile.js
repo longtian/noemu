@@ -44,6 +44,10 @@ module.exports=function(grunt){
                                         "pidfile": "/tmp/" + uuid + ".pid"
                                     };
                                     
+                                    if(options["name"]){
+                                        vm_options["name"]=options.name;
+                                    }
+                                    
                                     if(options["image"]){
                                         vm_options["image"]=options.image;
                                     }else if(options["cdrom"]){

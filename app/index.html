@@ -15,8 +15,9 @@
     </head>
     <body ng-app="VMManager">
         <div ng-controller="VMList">
-            
+
             <form style="border: 1px solid darkcyan">
+
                 <p>
                     <label>
                         Host
@@ -71,17 +72,24 @@
                         <input ng-model="vm.console" value="spice" type="radio"/>
                     </label>   
                 </p>
+                <p>
+                    <label>
+                        Name
+                        <input ng-model="vm.name" type="text"/>
+                    </label>  
+                </p>
                 <button type="submit" ng-click="addVM()">Create New Instance</button>
             </form>
-            
             <table>
                 <tr>
+                    <th>Name</th>
                     <th>UUID</th>
                     <th>Action</th>
                     <th>Console</th>
                     <th>port</th>
                 </tr>
                 <tr ng-repeat="vm in vms">
+                    <td>{{vm.name}}</td>
                     <td>{{vm.uuid}}</td>
                     <td><a target="_blank" href="noVNC/vnc_auto.html?host=qemu001.sh.intel.com&port={{vm.vnc.websocket}}">console</a></td>
                     <td>{{vm.console}}</td>
