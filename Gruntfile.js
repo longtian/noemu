@@ -6,8 +6,9 @@ module.exports=function(grunt){
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    
     grunt.initConfig({
-       jshint: {
+      jshint: {
         all: ['Gruntfile.js', '*.js','app/main/**/*.js']
       },
       connect:{
@@ -16,10 +17,6 @@ module.exports=function(grunt){
                 port:80,
                 base:"app",
                 keepalive:false,
-                open:{
-                    target:"http://localhost/index.html",
-                    appName:"Chrome"
-                },
                 middleware: function(connect, options, middlewares) {                    
                     middlewares.unshift(function(req,res,next){
                         if(req.method==="POST"){
