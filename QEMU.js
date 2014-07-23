@@ -54,31 +54,40 @@ QEMU.prototype.createVM = function(options) {
                 conn.end();
             });
         });
+    }).connect({
+        host: this.host,
+        port: 22,
+        username: this.username,
+        privateKey: this.password
+    });
+    return this;
+};
 
-//        var socket_command = "python /usr/share/nginx/html/websockify/fork.py " + (100 + options.spice.port) + " localhost:" + options.spice.port;
-//        
-//        conn.exec(socket_command, function(err, stream) {
-//            
-//            if (err) {
-//                throw err;
-//            }
-//            
-//            console.info(socket_command);
-//            
-//            stream.on('exit', function() {
-//            }).on('close', function() {
-//                conn.end();
-//            });
-//            
-//            stream.on('data', function(data) {
-//                console.info("data:" + data.toString());
-//            });
-//            
-//            stream.stderr.on('data', function(data) {
-//                console.error("raw command:" + socket_command);
-//                console.info("stderror:" + data.toString());
-//            });
-//        });
+/**
+ * 
+ * @param {String} uuid
+ * @returns {undefined}
+ */
+QEMU.prototype.destroyVM = function(uuid) {
+    var self = this;
+    var conn = new Connection();
+    conn.on('ready', function() {
+        var command="kill -9 `cat /tmp/"+uuid+".pid`";
+        conn.exec(command, function(err, stream) {
+            if (err) {
+                throw err;
+            }
+            stream.on('exit', function() {
+            }).on('close', function() {
+                conn.end();
+            });
+
+            stream.stderr.on('data', function(data) {
+                console.error("raw command:" + command);
+                console.info("stderror:" + data.toString());
+                conn.end();
+            });
+        });
     }).connect({
         host: this.host,
         port: 22,

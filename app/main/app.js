@@ -13,6 +13,7 @@ mixpanel.people.set({
 mixpanel.track("Page View");
 
 var myApp = angular.module("VMManager", ["firebase"]);
+
 function UserInfo($scope){
     $scope.email=user_email;
 }
@@ -20,10 +21,19 @@ function UserInfo($scope){
 function VMList($scope, $firebase,$http) {
     var vmRef = new Firebase("https://crackling-fire-2444.firebaseio.com/vms");
     $scope.vms = $firebase(vmRef);
+    
+    $scope.removeVM=function(uuid){
+        $http.delete("api/vms/"+uuid).success(function(){
+            mixpanel.track("Delete Instance");
+            $scope.vms.$child(uuid).$remove();
+        });
+    }
+    
     $scope.addVM = function() {
         mixpanel.track("Click Add");
         $http.post("api/vms",$scope.vm).success(function(data){
-            $scope.vms.$add(data);
+            var uuid=data.uuid;
+            $scope.vms.$child(uuid).$set(data);
             mixpanel.track("New Instance");
         });
     };

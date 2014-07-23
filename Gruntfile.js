@@ -68,6 +68,15 @@ module.exports=function(grunt){
                                     res.end(JSON.stringify(vm_options));
                                 });
                             });
+                        }else if(req.method==="DELETE"){
+                            var QEMU_HOST = 'qemu001.sh.intel.com';
+                            var QEMU = require('./QEMU');
+                            var keym = require('./KeyManager');
+                            var qemu = new QEMU(QEMU_HOST, 'root', keym.getPrivateKeyContent());
+                            var match=req.originalUrl.match(/^\/api\/vms\/(.*)$/);
+                            qemu.destroyVM(match[1]);
+                            res.writeHead(200);
+                            res.end("OK");
                         }else{
                             next();
                         }

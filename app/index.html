@@ -95,7 +95,10 @@
                 <tr ng-repeat="vm in vms">
                     <td>{{vm.name}}</td>
                     <td>{{vm.uuid}}</td>
-                    <td><a target="_blank" href="noVNC/vnc_auto.html?host=qemu001.sh.intel.com&port={{vm.vnc.websocket}}">console</a></td>
+                    <td>
+                        <a target="_blank" href="noVNC/vnc_auto.html?host=qemu001.sh.intel.com&port={{vm.vnc.websocket}}">console</a>|
+                        <button ng-click="removeVM(vm.uuid)">delete</button>
+                    </td>
                 </tr>
             </table>
         </div>
